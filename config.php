@@ -1,6 +1,6 @@
 <?php
 
-$dev = true;
+$dev = false;
 $ownerMail = 'aa@bb.cc';
 $mailSubject = '您在百度的留言有了新的回应';
 
