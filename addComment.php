@@ -15,18 +15,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST')
         {
             if (strtolower($data['captcha']) != strtolower($_SESSION['captcha']))
             {
+                httpStatus(403);
                 echo(json_encode([
                     'reason' => 'wrong captcha: ' . $data['captcha']
                 ]));
-                http_response_code(403);
-                return;
+                exit();
             }
         } else {
+            httpStatus(403);
             echo(json_encode([
                 'reason' => 'no captcha'
             ]));
-            http_response_code(501);
-            return;
+            exit();
         }
     }
 
