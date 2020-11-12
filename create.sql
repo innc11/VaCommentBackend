@@ -2,6 +2,7 @@ CREATE TABLE IF NOT EXISTS 'comments' (
   'id'         INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
   'parent'     TEXT,
   'url'        TEXT,
+  'title'      TEXT,
   'nick'       TEXT,
   'mail'       TEXT,
   'website'    TEXT,
@@ -15,6 +16,7 @@ CREATE TABLE IF NOT EXISTS 'comments' (
 CREATE TABLE IF NOT EXISTS 'views' (
   'id'         INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
   'url'        TEXT,
+  'title'      TEXT,
   'time'       DATETIME,
   'ip'         TEXT,
   'useragent'  TEXT

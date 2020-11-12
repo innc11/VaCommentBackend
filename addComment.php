@@ -5,9 +5,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST')
     $data = json_decode(file_get_contents('php://input'), true);
 
     if ($dev)
-        check($data, ['url', 'nick', 'content', 'parent']);
+        check($data, ['url', 'title', 'nick', 'content', 'parent']);
     else
-        check($data, ['url', 'nick', 'content', 'parent', 'captcha']);
+        check($data, ['url', 'title', 'nick', 'content', 'parent', 'captcha']);
 
     if (!$dev)
     {
@@ -33,11 +33,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST')
     unset($_SESSION['captcha']);
     
     $newComment = [
-        'parent' => $data['parent']!=-1? $data['parent']:NULL,
-        'url' => $data['url'],
+        'parent' => $data['parent']!=-1? $data['parent']:0,
+        'url' => urldecode($data['url']),
+        'title' => $data['title'],
         'nick' => $data['nick'],
-        'mail' => $data['mail']? $data['mail']:NULL,
-        'website' => $data['website']? $data['website']:NULL,
+        'mail' => $data['mail']? $data['mail']:'',
+        'website' => $data['website']? $data['website']:'',
         'content' => $data['content'],
         'approved' => true,
         'time' => time(),
@@ -45,8 +46,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST')
         'useragent' => $_SERVER['HTTP_USER_AGENT']
     ];
 
-    $sql = "INSERT INTO 'comments' (url, parent, nick, mail, website, content, approved, time, ip, useragent)".
-            "VALUES (:url, :parent, :nick, :mail, :website, :content, :approved, :time, :ip, :useragent)";
+    $sql = "INSERT INTO 'comments' (url, title, parent, nick, mail, website, content, approved, time, ip, useragent)".
+            "VALUES (:url, :title, :parent, :nick, :mail, :website, :content, :approved, :time, :ip, :useragent)";
     $statement = $pdo->prepare($sql);
     $statement->execute($newComment);
     $statement->closeCursor();
@@ -81,11 +82,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST')
         $params = [
             'subject' => $mailSubject,
             'comment' => [
-                'time' => time(),
+                'time' => date('Y-n-j H-i-s', time()),
                 'text' => $data['content'],
                 'author' => $data['nick'],
                 'mail' => 'authorMail',
-                'permalink' => 'https://baidu.com',
+                'permalink' => isset($_SERVER['HTTP_REFERER'])? $_SERVER['HTTP_REFERER']:$siteInfo['url'],
             ],
             'recipients' => [[
                 'mail' => $recipient,
