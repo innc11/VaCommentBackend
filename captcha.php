@@ -42,9 +42,15 @@ for ($i = 0; $i < 3; $i++) {
 }
 
 
-$_SESSION["captcha"] = $captcha;
+// $_SESSION["captcha"] = $captcha;
 
-// setcookie('captcha', $captcha, time()+60);
+// 'samesite' => 'None' // None || Lax  || Strict
+
+setcookie('captcha', md5(strtolower($captcha)), [
+    'expires' => 0,
+    'samesite' => 'None',
+    'secure' => true,
+]);
 
 header('content-type:image/png');
 

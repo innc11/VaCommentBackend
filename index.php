@@ -1,9 +1,9 @@
 <?php
-    session_start();
 
-    require('config.php');
-    require('database.php');
     require('utils.php');
+    require('config.php');
+    require('cors.php');
+    require('database.php');
     require('mail.php');
     
     require('addComment.php');

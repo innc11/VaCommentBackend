@@ -65,4 +65,17 @@ function httpStatus($num){//网页返回码
     header($http[$num]);
 }
 
+// https://blog.csdn.net/ahaotata/article/details/84999015
+function getAllHttpHeaders()
+{
+    foreach ($_SERVER as $name => $value)
+    {
+        if (substr($name, 0, 5) == 'HTTP_')
+        {
+            $headers[str_replace(' ', '-', ucwords(strtolower(str_replace('_', ' ', substr($name, 5)))))] = $value;
+        }
+    }
+    return $headers;
+}
+
 ?>

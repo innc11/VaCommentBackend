@@ -11,9 +11,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST')
 
     if (!$dev)
     {
-        if (isset($_SESSION['captcha']))
-        {
-            if (strtolower($data['captcha']) != strtolower($_SESSION['captcha']))
+        if (!isset($_COOKIE['captcha'])) {
+            httpStatus(403);
+            echo(json_encode([
+                'reason' => 'not captcha requested',
+            ]));
+            exit();
+        } else if (!isset($data['captcha'])) {
+            httpStatus(403);
+            echo(json_encode([
+                'reason' => 'no captcha inputed'
+            ]));
+            exit();
+        } else {
+            if (md5(strtolower($data['captcha'])) != $_COOKIE['captcha'])
             {
                 httpStatus(403);
                 echo(json_encode([
@@ -21,12 +32,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST')
                 ]));
                 exit();
             }
-        } else {
-            httpStatus(403);
-            echo(json_encode([
-                'reason' => 'no captcha'
-            ]));
-            exit();
         }
     }
 

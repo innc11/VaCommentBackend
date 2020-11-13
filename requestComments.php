@@ -38,8 +38,8 @@ function visit($pdo, $expires)
     {
         $sql = "INSERT INTO 'views' (url, title, time, ip, useragent)".
                 "VALUES (:url, :title, :time, :ip, :useragent)";
-        $statement = $pdo->prepare($sql);
-        $statement->execute([
+        $b = $statement = $pdo->prepare($sql);
+        $a = $statement->execute([
             'url' => $_GET['url'],
             'title' => $_GET['title'],
             'time' => time(),
@@ -49,7 +49,11 @@ function visit($pdo, $expires)
         $statement->closeCursor();
     }
 
-    setcookie($cookieKey, '123', time()+$expires);
+    setcookie($cookieKey, '123', [
+        'expires' => time()+$expires,
+        'samesite' => 'None',
+        'secure' => true,
+    ]);
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET')
