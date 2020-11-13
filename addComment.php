@@ -84,6 +84,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST')
             $recipient = $ownerMail;
         }
 
+        $headers = getAllHttpHeaders();
+        $path = explode('=', $_SERVER['QUERY_STRING'])[1];
+        $permalink = isset($headers['Origin'])? $headers['Origin'].$path:$siteInfo['url'];
+
         $params = [
             'subject' => $mailSubject,
             'comment' => [
@@ -91,7 +95,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST')
                 'text' => $data['content'],
                 'author' => $data['nick'],
                 'mail' => 'authorMail',
-                'permalink' => isset($_SERVER['HTTP_REFERER'])? $_SERVER['HTTP_REFERER']:$siteInfo['url'],
+                'permalink' => $permalink,
             ],
             'recipients' => [[
                 'mail' => $recipient,
