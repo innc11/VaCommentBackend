@@ -1,24 +1,19 @@
 <?php
 
 // 处理CORS请求
-if ($allowAllCORSRequest)
-{
-    if (isset(getAllHttpHeaders()['Origin']))
-    {
+if ($config->allow_all_cors_request) {
+    if (isset(getAllHttpHeaders()['Origin'])) {
         header('Access-Control-Allow-Origin: '.getAllHttpHeaders()['Origin']);
     } else {
-        if (!$dev) {
+        if (!$config->dev) {
             httpStatus(403);
-            echo(json_encode([
-                'reason' => 'not allowed',
-            ]));
+            echo(json_encode(['reason' => 'not allowed',]));
             exit();
         }
     }
 } else {
-    header('Access-Control-Allow-Origin: '.$allowCORSHost);
+    header('Access-Control-Allow-Origin: '.$config->allow_cors_host);
 }
-header('Content-Type:application/json;charset=utf-8');
 header("Access-Control-Allow-Methods: GET, POST");
 header("Access-Control-Allow-Credentials: true");
 

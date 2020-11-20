@@ -7,8 +7,9 @@ require dirname(__FILE__) . '/PHPMailer/src/Exception.php';
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
-function mailBody($comment, $siteInfo, $subject)
+function mailBody($comment, $subject)
 {
+    global $config;
     $commentAt = $comment['time'];
     $commentText = htmlspecialchars($comment['text']);
     $content = getTemplate();
@@ -26,9 +27,9 @@ function mailBody($comment, $siteInfo, $subject)
     );
     
     $replace = array(
-        $siteInfo['url'],
-        $siteInfo['title'],
-        $siteInfo['description'],
+        $config->site_url,
+        $config->site_title,
+        $config->site_description,
         $subject,
         $commentText,
         $comment['author'],
@@ -42,8 +43,9 @@ function mailBody($comment, $siteInfo, $subject)
     return $text;
 }
 
-function sendMail($smtpConfig, $siteInfo, $params, $testMode=false)
+function sendMail($params, $testMode=false)
 {
+    global $config;
     $subject = $params['subject'];
     $comment = $params['comment'];
     $recipients = $params['recipients'];
@@ -57,13 +59,13 @@ function sendMail($smtpConfig, $siteInfo, $params, $testMode=false)
         $mail->CharSet = PHPMailer::CHARSET_UTF8;
         $mail->Encoding = PHPMailer::ENCODING_BASE64;
         $mail->isSMTP();
-        $mail->Host = $smtpConfig['STMPHost']; // SMTP 服务地址
+        $mail->Host = $config->smtp_host; // SMTP 服务地址
         $mail->SMTPAuth = true; // 开启认证
-        $mail->Username = $smtpConfig['SMTPUserName']; // SMTP 用户名
-        $mail->Password = $smtpConfig['SMTPPassword']; // SMTP 密码
-        $mail->SMTPSecure = $smtpConfig['SMTPSecure']; // SMTP 加密类型 'ssl' or 'tls'.
-        $mail->Port = $smtpConfig['SMTPPort']; // SMTP 端口
-        $mail->setFrom($smtpConfig['fromMail'], $smtpConfig['fromName']);
+        $mail->Username = $config->smtp_username; // SMTP 用户名
+        $mail->Password = $config->smtp_password; // SMTP 密码
+        $mail->SMTPSecure = $config->smtp_secure; // SMTP 加密类型 'ssl' or 'tls'.
+        $mail->Port = $config->smtp_port; // SMTP 端口
+        $mail->setFrom($config->smtp_from_mail, $config->smtp_from_name);
         $mail->Subject = $subject; // 邮件标题
         $mail->isHTML(); // 邮件为HTML格式
 
@@ -71,7 +73,7 @@ function sendMail($smtpConfig, $siteInfo, $params, $testMode=false)
             $mail->addAddress($recipient['mail'], $recipient['name']); // 发件人
 
         // 邮件内容
-        $content = mailBody($comment, $siteInfo, $subject);
+        $content = mailBody($comment, $subject);
         $mail->Body = $content;
 
         // 测试模式不需要真的发送邮件
@@ -79,9 +81,8 @@ function sendMail($smtpConfig, $siteInfo, $params, $testMode=false)
             $mail->send();
 
         // 保存邮件内容快照
-        if($smtpConfig['snapshot'])
-        {
-            $fileName = dirname(__FILE__) . '/Snapshot.html';
+        if($config->smtp_snapshot) {
+            $fileName = dirname(__FILE__) . '/'.$config->mail_snapshot_filename;
             file_put_contents($fileName, $content);
         }
 
@@ -89,21 +90,19 @@ function sendMail($smtpConfig, $siteInfo, $params, $testMode=false)
         if ($mail->isError()) {
             $data = $mail->ErrorInfo; // 记录发信失败的日志
         } else { // 记录发信成功的日志
-            $data  = '邮件已发送! ';
-            $data .=  $smtpConfig['fromName'] . '(' . $smtpConfig['fromMail'] . ')';
-            $data .= ' To ';
+            $data  = $tag . '已发送: '; // 评论通知 / 评论审核
+            // $data .=  $smtpConfig['fromName'] . '(' . $smtpConfig['fromMail'] . ')';
+            // $data .= ' To ';
 
             foreach ($recipients as $recipient) {
                 $recipientName = $recipient['name'];
                 $recipientMail = $recipient['mail'];
                 
-                $data .= $recipientName . '(' . $recipientMail . '), ';
+                $data .= $recipientName . '(' . $recipientMail . ') ';
             }
 
-            $data .= "  (" . $tag . ")"; // 评论通知 / 评论审核
-
             if($testMode)
-                $data .= "  (测试模式)";
+                $data .= "  [测试模式]";
         }
         
         mail_log($data);
@@ -115,7 +114,8 @@ function sendMail($smtpConfig, $siteInfo, $params, $testMode=false)
 
 function getTemplate()
 {
-    $template = 'mail-template.html';
+    global $config;
+    $template = $config->mail_template_filename;
     $templatefile = dirname(__FILE__) . '/' . $template;
 
     if (!file_exists($templatefile)) {
@@ -127,7 +127,8 @@ function getTemplate()
 
 function mail_log($content, $linebreak=PHP_EOL)
 {
-    $logFile = dirname(__FILE__) . '/log.txt';
+    global $config;
+    $logFile = dirname(__FILE__) . '/' .$config->mail_logs_filename;
     file_put_contents($logFile, sprintf("[%s]: %s%s", date('Y-m-d H:i:s'), $content, $linebreak), FILE_APPEND);
 }
 

@@ -1,28 +1,24 @@
 <?php
 
-function getReply($pdo, $replyId)
+function getReply($replyId)
 {
-    global $ownerMail;
-    
+    global $config;
+    global $db;
+
     $sql = "select * from 'comments' where parent = :parent order by time desc";
-    $statement = $pdo->prepare($sql);
-    $statement->execute(['parent' => $replyId]);
-    $replies = $statement->fetchAll();
-    $statement->closeCursor();
-
+    $replies = $db->prepare($sql)->execute(['parent' => $replyId])->fetchAll();
     $repliesObj = [];
-
     foreach ($replies as $reply) {
         $repliesObj[] = [
             'id' => $reply['id'],
             'avatar' => getAvatarByMail($reply['mail']),
             'nick' => $reply['nick'],
             'website' => $reply['website'],
-            'isauthor' => $reply['mail']==$ownerMail,
+            'isauthor' => $reply['mail']==$config->owner_mail,
             'useragent' => $reply['useragent'],
             'content' => $reply['content'],
             'time' => $reply['time'],
-            'replies' => getReply($pdo, $reply['id']),
+            'replies' => getReply($reply['id']),
         ];
     }
 
@@ -30,23 +26,21 @@ function getReply($pdo, $replyId)
 }
 
 
-function visit($pdo, $expires)
+function visit($expires)
 {
+    global $db;
     $cookieKey = 'identity-'.md5($_GET['url']);
 
-    if (!isset($_COOKIE[$cookieKey]))
-    {
+    if (!isset($_COOKIE[$cookieKey])) {
         $sql = "INSERT INTO 'views' (url, title, time, ip, useragent)".
                 "VALUES (:url, :title, :time, :ip, :useragent)";
-        $b = $statement = $pdo->prepare($sql);
-        $a = $statement->execute([
+        $db->prepare($sql)->execute([
             'url' => $_GET['url'],
             'title' => $_GET['title'],
             'time' => time(),
             'ip' => $_SERVER['REMOTE_ADDR'],
             'useragent' => $_SERVER['HTTP_USER_AGENT']
-        ]);
-        $statement->closeCursor();
+        ])->end();
     }
 
     setcookie($cookieKey, '123', [
@@ -58,20 +52,20 @@ function visit($pdo, $expires)
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET')
 {
-    global $pageCapacity;
+    global $config;
+    $pageCapacity = $config->page_capacity;
+    $ownerMail = $config->owner_mail;
+    $siteUrl = $config->site_url;
 
     check($_GET, ['url', 'title']);
 
-    visit($pdo, $cookieRefreshPeriod);
+    visit($config->cookie_refresh_period);
 
     $url = $_GET['url'];
     $pagination = isset($_GET['pagination']) && $_GET['pagination']>=0? $_GET['pagination']:0;
 
     $sql = "select * from 'comments' where url = :url and parent = 0 order by time desc";
-    $statement = $pdo->prepare($sql);
-    $statement->execute(['url' => $url]);
-    $rows = $statement->fetchAll();
-    $statement->closeCursor();
+    $rows = $db->prepare($sql)->execute(['url' => $url])->fetchAll();
 
     $data = [];
 
@@ -87,12 +81,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET')
             'id' => $row['id'],
             'avatar' => getAvatarByMail($row['mail']),
             'nick' => $row['nick'],
-            'website' => $row['mail'] != $ownerMail? $row['website']:$siteInfo['url'], // 如果是博主就不需要写网站，就算写了也会变成默认站点地址
+            'website' => $row['mail'] != $ownerMail? $row['website']:$siteUrl, // 如果是博主就不需要写网站，就算写了也会变成默认站点地址
             'isauthor' => $row['mail'] == $ownerMail,
             'useragent' => $row['useragent'],
             'content' => $row['content'],
             'time' => $row['time'],
-            'replies' => getReply($pdo, $row['id']),
+            'replies' => getReply($row['id']),
         ];
     }
 
