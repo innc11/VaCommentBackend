@@ -1,16 +1,34 @@
 <?php
+    session_start();
     ini_set('date.timezone','Asia/Shanghai');
-
-    require('utils.php');
-    require('config.php');
-    require('cors.php');
-    require('database.pdo.php');
-    require('mail.php');
-
-    header('Content-Type:application/json;charset=utf-8');
+    require 'vendor/autoload.php';
+    require 'config.php';
+    require 'utils.php';
+    require 'cors.php';
+    require 'database.pdo.php';
     
-    $db = new DatabaseTool();
+    $router = new \Klein\Klein();
 
-    require('addComment.php');
-    require('requestComments.php');
+    $router->respond(function($request, $response, $service, $app){
+        $app->register('db', function(){
+            return new DatabaseTool('sqlite:database.sqlite3');
+        });
+
+        $app->register('config', function(){
+            global $config;
+            return $config;
+        });
+
+    });
+
+    require('_addComment.php');
+    require('_requestComments.php');
+    require('_captcha.php');
+    require('_smilies.php');
+
+    $router->onHttpError(function($code, $router, $matched, $methods_matched, $http_exception) {
+        $router->response()->body('It seems something wrong! '.$code.'('.$router->request()->uri().')');
+    });
+
+    $router->dispatch();
 ?>

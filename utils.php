@@ -8,13 +8,15 @@ function getAvatarByMail($mail)
 function check($array, $fields)
 {
     foreach ($fields as $f) {
-        if (!isset($array[$f]) || !$array[$f])
-        {
-            httpStatus(403);
-            echo(json_encode([
-                'reason' => 'missing '.$f
-            ]));
-            exit();
+        if (trim($f)) {
+            if (!isset($array[$f]) || !$array[$f])
+            {
+                httpStatus(403);
+                echo(json_encode([
+                    'reason' => 'missing '.$f
+                ]));
+                exit();
+            }
         }
     }
 }
@@ -76,6 +78,28 @@ function getAllHttpHeaders()
         }
     }
     return $headers;
+}
+
+function setCookie2($key, $value, $paragmeters=[])
+{
+    global $config;
+    $cfg = [];
+
+    if ($config->ssl) {
+        $cfg = [
+            'expires' => 0,
+            'samesite' => 'None', // 'samesite' => 'None' // None || Lax  || Strict
+            'secure' => true,
+        ];
+    } else {
+        $cfg = [
+            'expires' => 0,
+        ];
+    }
+
+    array_merge($cfg, $paragmeters);
+    
+    setcookie($key, $value, $cfg);
 }
 
 ?>

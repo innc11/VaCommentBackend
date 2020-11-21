@@ -11,7 +11,7 @@ function mailBody($comment, $subject)
 {
     global $config;
     $commentAt = $comment['time'];
-    $commentText = htmlspecialchars($comment['text']);
+    $commentText = showsmilies($config, htmlspecialchars($comment['text']));
     $content = getTemplate();
 
     $search  = array(
@@ -32,9 +32,9 @@ function mailBody($comment, $subject)
         $config->site_description,
         $subject,
         $commentText,
-        $comment['author'],
-        $comment['mail'],
-        $comment['permalink'],
+        htmlspecialchars($comment['author']),
+        htmlspecialchars($comment['mail']),
+        htmlspecialchars($comment['permalink']),
         $commentAt
     );
 

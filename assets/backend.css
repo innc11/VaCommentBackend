@@ -1,0 +1,58 @@
+.all-smilie-set-wrap {
+	width: 551px;
+	padding: 8px;
+	background-color: #ffe661;
+}
+
+
+.smilie-set {
+	border: 2px solid #5e58ff94;
+	display: inline-flex;
+	overflow: hidden;
+	width: 130px;
+	font-size: 0.9rem;
+	height: 32px;
+	flex-direction: row;
+}
+
+.smilie-set .smilie-set-label {
+	word-break: break-word;
+	flex: 1;
+	line-height: 1;
+	cursor: move;
+}
+
+.smilie-set .smilie-set-preview img {
+    max-width: 32px;
+    max-height: 32px;
+}
+
+.smilie-set .smilie-set-preview {
+    width: 32px;
+    height: 32px;
+    background-repeat: no-repeat;
+    background-size: contain;
+    cursor: pointer;
+}
+
+
+
+
+
+
+
+.gridly {
+	position: relative;
+	background-color: #FFFBCC;
+}
+
+/* jQuery Gridly */
+.gridly, .gridly > :not(.dragging){
+	-webkit-transition: all 0.4s ease-in-out;
+	-moz-transition: all 0.4s ease-in-out;
+	transition: all 0.4s ease-in-out;
+}
+.gridly .dragging{
+	z-index: 800;
+	box-shadow: 3px 3px 5px #00000075;
+}

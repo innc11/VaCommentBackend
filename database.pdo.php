@@ -6,7 +6,7 @@ class DatabaseTool
 
     public $_statement;
 
-    public function __construct(string $source='sqlite:comments.sqlite3')
+    public function __construct(string $source)
     {
         $this->pdo = new PDO($source);
         $this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
