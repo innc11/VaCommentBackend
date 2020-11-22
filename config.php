@@ -30,7 +30,7 @@ $config =  (object) [
     'smilies_dir' => 'smilie_sets', // 表情包文件夹, 用于扫描
     'smilies_http_header' => 'http://127.0.0.1:4454/', // 表情包文件夹, 用于访问（记得放开安全策略）
     'smilies_setting_file' => 'smilies_settings.json', // 表情包设置文件
-    'gravatar_default' => 'monsterid', // 默认头像，可选值: <留空>, 404, mp, identicon, monsterid, wavatar, retro, robohash, blank
+    'gravatar_default' => '', // 默认头像，可选值: <留空>, 404, mp, identicon, monsterid, wavatar, retro, robohash, blank
     'gravatar_nocache' => false, // 是否不缓存头像，这个一般情况下建议设置为false
 ];
 

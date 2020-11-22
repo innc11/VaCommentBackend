@@ -1,50 +1,5 @@
 <?php
 
-function smiliesDir($config, $path = '')
-{
-    $dirs =  [];
-    $files = [];
-    $f = dirname(__FILE__).'/'.$config->smilies_dir.'/'.$path;
-
-    if (file_exists($f)) {
-        foreach (scandir($f) as $file) {
-            if($file=='.' or $file=='..')
-                continue;
-
-            if (strpos($file, '.')===false)
-                $dirs[] = $file;
-            else
-                $files[] = $file;
-        }
-    }
-
-    return (object) [
-        'dirs' => $dirs,
-        'files' => $files
-    ];
-}
-
-/**
- * 转码中文名称
- * 
- * @access public
- * @return string
- */
-function cname(&$value) {
-    $pagecode = 'utf-8';
-    $code = function_exists('mb_detect_encoding') ? strtolower(mb_detect_encoding($value, array('ASCII','GB2312','GBK','UTF-8'))) : $pagecode;
-
-    if ($code=='gb2312' || $code=='euc-cn') {
-        if (function_exists('iconv')) {
-            $value = iconv($code,$pagecode,$value);
-        } else if (function_exists('mb_convert_encoding')) {
-            $value = mb_convert_encoding($value,$pagecode,$code);
-        }
-    }
-    $value = preg_replace('/^.+[\\\\\\/]/','',$value);
-
-    return $value;
-}
 
 /**
  * 获取表情译码表(排序过的/sorted)
@@ -60,14 +15,16 @@ function smilieTranslations($config, $excludeDisabled=false)
 
     $smtrans = [];
 
-    $all_smilie_set = smiliesDir($config, '')->dirs;
-    array_walk($all_smilie_set, 'cname', '');
-
+    // 获取所有表情包
+    $all_smilie_set = getDir($config->smilies_dir)->files;
     foreach($all_smilie_set as $smilie_set) {
+        $raw_file = $smilie_set;
+        $smilie_set = str_replace('.json', '', $smilie_set); // 去掉 .json
         if (in_array($smilie_set, $smdisable) && $excludeDisabled)
             continue;
 
-        $smilies = smiliesDir($config, $smilie_set)->files;
+        // 获取所有表情文件
+        $smilies = json_decode(file_get_contents(realpath($config->smilies_dir.'/'.$raw_file)));
         $smtrans[$smilie_set] = [];
         foreach($smilies as $smilie) {
             $tag = $smilie;
@@ -114,6 +71,7 @@ function showsmilies($config, $content)
     return $content;
 }
 
+// 获取表情设置（排序/禁用）
 function getSmilieSettings($config)
 {
     $smilieSetSettingFile = $config->smilies_setting_file;
@@ -126,6 +84,8 @@ function getSmilieSettings($config)
         'disabled' => $disabledSmilieSet,
     ];
 }
+
+// ------------------
 
 function onSmilieSetPanel($request, $response, $service, $app)
 {
@@ -184,32 +144,22 @@ function onSmiliesRequested($request, $response, $service, $app)
 
     $lists = [];
     $imgUrlHeader = $app->config->smilies_http_header;
+    
+    // 如果不是跨域访问的话应该就是后台访问，后台访问需要显示所有表情包
+    $ExcludeDisabled = isset(getAllHttpHeaders()['Origin']);
 
     if (isset($request->set)) {
         // 获取表情包文件夹下的所有表情
-        $smilies = smiliesDir($app->config, $request->set)->files;
-        array_walk($smilies, 'cname', '');
+        $all = smilieTranslations($app->config, $ExcludeDisabled);
+        $set = $request->set;
+        $smilies = isset($all[$set])? array_keys($all[$set]):[];
         $lists = [$imgUrlHeader, $smilies];
     } else {
-        // 列出所有表情包文件夹
-        // $all_smilie_set = smiliesDir($app->config, '')->dirs;
-        // array_walk($all_smilie_set, 'cname', '');
-        // $all_smilie_set_with_preview = [];
-        // foreach($all_smilie_set as $smilie_set) {
-        //     $smilies = smiliesDir($app->config, $smilie_set)->files;
-        //     if (count($smilies) > 0) {
-        //         $preview = $smilies[0];
-        //         array_push($all_smilie_set_with_preview, [$smilie_set, $preview]);
-        //     }
-        // }
-        
-        // 这是更方便（虽然不是最高效的）的办法，故注释上面的
+        // 获取所有表情包
         $sms = [];
-        $ExcludeDisabled = isset(getAllHttpHeaders()['Origin']); // 如果不是跨域访问的话应该就是后台访问，后台访问需要显示所有表情包
         foreach(smilieTranslations($app->config, $ExcludeDisabled) as $k => $v) {
             $sms[] = [$k, array_keys($v)[0]];
         }
-
         $lists = [$imgUrlHeader, $sms];
     }
     echo(json_encode($lists));
@@ -224,26 +174,27 @@ function onSmilieAPIRequested($request, $response, $service, $app)
     ]));
 }
 
+// 性能太低故注释
 // 处理静态文件
-function onSmilieFileRequested($request, $response, $service, $app)
-{
-    $f = dirname(__FILE__).'/'.$app->config->smilies_dir.'/'.$request->dir.'/'.$request->file;
-    if (file_exists($f)) {
-        $fi = new finfo(FILEINFO_MIME_TYPE);
-        $mime_type = $fi->file($f);
-        header('Content-Type:'.$mime_type);
-        header('Content-Length:'.filesize($f));
-        header('Accept-Ranges: bytes');
-        echo(file_get_contents($f));
-    } else {
-        $response->code(404);
-    }
-}
+// function onSmilieFileRequested($request, $response, $service, $app)
+// {
+//     $f = dirname(__FILE__).'/'.$app->config->smilies_dir.'/'.$request->dir.'/'.$request->file;
+//     if (file_exists($f)) {
+//         $fi = new finfo(FILEINFO_MIME_TYPE);
+//         $mime_type = $fi->file($f);
+//         header('Content-Type:'.$mime_type);
+//         header('Content-Length:'.filesize($f));
+//         header('Accept-Ranges: bytes');
+//         echo(file_get_contents($f));
+//     } else {
+//         $response->code(404);
+//     }
+// }
 
 
 $router->respond('GET',  '/smilie_api/[:set]?', 'onSmiliesRequested'); // 获取表情包列表或者表情列表
 $router->respond('POST', '/smilie_api', 'onSmilieAPIRequested'); // 返回表单数据
 $router->respond('GET',  '/smilie_set_panel', 'onSmilieSetPanel'); // 管理页面
-$router->respond('GET',  '/smilie_sets/[:dir]/[:file]', 'onSmilieFileRequested'); // 静态文件处理
+// $router->respond('GET',  '/smilie_sets/[:dir]/[:file]', 'onSmilieFileRequested'); // 静态文件处理(性能太低故注释)
 
 ?>
