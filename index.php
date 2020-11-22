@@ -2,7 +2,10 @@
     session_start();
     ini_set('date.timezone','Asia/Shanghai');
     require 'vendor/autoload.php';
-    require 'config.php';
+    if (file_exists('config.dev.php'))
+        require 'config.dev.php';
+    else
+        require 'config.php';
     require 'utils.php';
     require 'cors.php';
     require 'database.pdo.php';

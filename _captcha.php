@@ -6,8 +6,8 @@ class ValidateCode
     private $charset = 'abcdefghkmnprstuvwxyz23456789'; //随机因子
         private $code;       //验证码
         private $codelen = 4;     //验证码长度
-        private $width = 130;     //宽度
-        private $height = 50;     //高度
+        private $width = 80;     //宽度
+        private $height = 30;     //高度
         private $img;        //图形资源句柄
         private $font;        //指定的字体
         private $fontsize = 20;    //指定字体大小
