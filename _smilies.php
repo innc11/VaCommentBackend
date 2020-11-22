@@ -118,8 +118,8 @@ function onSmilieSetPanel($request, $response, $service, $app)
             </div>
             <div style="color:#999;font-size:.92857em;">
                 <p>拖动调整表情包的显示顺序，点击表情包图片启用/禁用表情包，禁用后仅不显示，不影响解析
-                <br/>下方的编辑框内容请不要改动，如果出现异常请删除表情设置文件（通常是smilies_settings.json，具体请参考config.php里的smilies_setting_file）
-                <br/>设置完成后点击"提交按钮生效"</p>
+                <br/>下方的编辑框内容请不要改动，如果出现异常无法显示表情等，请点击下方'重置按钮'然后点击'提交'即可
+                <br/>排序或者启用禁用后需要点击"提交"按钮才会生效</p>
             </div>
 
             <form action="smilie_api" method="post">
