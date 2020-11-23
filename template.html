@@ -3,57 +3,69 @@
 <head>
     <meta charset="utf-8">
     <style type="text/css">
-        body {
-            width: 100%;
-            height: 800px;
-            background-color: #EEF3FA; 
-            font-size: 14px;
-            font-family: 'Microsoft YaHei';
+        .card {
+            border-radius: 10px;
+            font-size:13px;
+            color: #555555;
+            width: 666px;
+            font-family:'Century Gothic','Trebuchet MS','Hiragino Sans GB',微软雅黑,'Microsoft Yahei',Tahoma,Helvetica,Arial,'SimSun',sans-serif;
+            margin:50px auto;
+            border:1px solid #eee;
+            max-width:100%;
+            background: #ffffff repeating-linear-gradient(-45deg,#fff,#fff 1.125rem,transparent 1.125rem,transparent 2.25rem);
+            box-shadow: 0 1px 5px rgba(0, 0, 0, 0.15);
         }
 
-        .container {
-            margin: 100px auto;
-            background-color: #fff;
-            width: 866px;
-            border: 1px solid #F1F0F0;
-            box-shadow: 0 0 5px #F1F0F0;
+        .hero {
+            width:100%;
+            background:#49BDAD;
+            color:#ffffff;
+            border-radius: 10px 10px 0 0;
+            background-image: -moz-linear-gradient(0deg, rgb(67, 198, 184), rgb(255, 209, 244));
+            background-image: -webkit-linear-gradient(0deg, rgb(67, 198, 184), rgb(255, 209, 244));
+            height: 66px;
+        }
+        
+        .hero p {
+            font-size:15px;
+            word-break:break-all;
+            padding: 23px 32px;
+            margin:0;
+            background-color: hsla(0,0%,100%,.4);
+            border-radius: 10px 10px 0 0;
         }
 
-        .title {
-            width: 838px;
-            height: 78px;
-            padding-top: 10px;
-            padding-left: 28px;
-            background-color: #F7F7F7;
+        .comment {
+            background: #fafafa repeating-linear-gradient(-45deg,#fff,#fff 1.125rem,transparent 1.125rem,transparent 2.25rem);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+            margin:20px 0px;
+            padding:15px;
+            border-radius:5px;
+            font-size:14px;
+            color:#555555;
         }
 
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="title">
-            <a style="cursor:pointer; font-size:30px; color:#333;text-decoration: none; font-weight: bold;" href="{siteUrl}">{siteTitle}</a>
-            <span style="color:#999; font-size:14px;padding-left:0px;">{siteDescription}</span>
-        </div>
-        <div style="padding:30px;">
-            <!-- <div style="height:50px; line-height:50px; font-size:16px; color:#9e9e9e;">{desc}</div> -->
-            <span style="color:#333;">{commentAuthor}：</span>
-            <div id="commentText" style="line-height:30px;  font-size:16px; margin-bottom:20px; text-indent: 2em;">
-                {commentText}
-            </div>
-            <!-- <div style="line-height:40px;  font-size:14px;">
-                <label style="color:#999;">评论人：</label>
-                   邮箱: {_authorMail}
-            </div> -->
-            <div style="line-height:40px;  font-size:14px;">
-                <label style="color:#999;">原地址：</label>
-                <a href="{permalink}#va-comment-editor" style="color:#333;">{permalink}</a>
-            </div>
-            <div style="line-height:40px;  font-size:14px;">
-                <label style="color:#999;">时间：</label>
-                <span style="color:#333;">{time}</span>
-            </div>
-        </div>
-    </div>
+    <table style="width: 99.8%;height:99.8% ">
+        <tbody>
+            <tr>
+                <td> 
+                    <div class="card"> 
+                        <div class="hero"> 
+                            <p href="{siteUrl}">您在<a style="text-decoration:none;color: #ffffff;">{siteTitle}</a>上的留言有新回复啦！ </p> 
+                        </div> 
+                        <div style="margin:40px auto;width:90%"> 
+                            <p>{commentAuthor} 给您的回复如下：</p> 
+                            <div class="comment">{commentText}</div> 
+                            <p>您可以点击 <a style="text-decoration:none; color:#12addb" href="{permalink}#va-comment">这里</a> 查看回复的完整內容，欢迎再次光临 <a style="text-decoration:none; color:#12addb" href="{siteUrl}"> {siteTitle} </a>。</p> 
+                            <style type="text/css">a:link{text-decoration:none}a:visited{text-decoration:none}a:hover{text-decoration:none}a:active{text-decoration:none}</style> 
+                        </div> 
+                    </div> 
+                </td>
+            </tr>
+        </tbody>
+    </table>
 </body>
 </html>
