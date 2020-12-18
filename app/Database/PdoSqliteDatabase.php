@@ -1,6 +1,10 @@
 <?php
 
-class DatabaseTool
+namespace Database;
+
+use \PDO;
+
+class PdoSqliteDatabase
 {
     public $pdo;
 
@@ -16,7 +20,7 @@ class DatabaseTool
         // $this->pdo->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
 
         // 初始化数据库
-        $this->executeSQLFromFile('sql/initialize.sql');
+        $this->executeSQLFromFile(ASSET_DIR.DIRECTORY_SEPARATOR.'sql'.DIRECTORY_SEPARATOR.'initialize.sql');
     }
 
     public function executeSQLFromFile(string $path, array $search=[], array $replace=[])

@@ -1,15 +1,17 @@
 <?php
 
-class DatabaseTool
+namespace Database;
+
+class NativeSqliteDatabase
 {
     public $sqlite;
 
     public $_statement;
     public $_result;
 
-    public function __construct(string $path='comments.db')
+    public function __construct(string $path)
     {
-        $this->sqlite = new SQLite3($path);
+        $this->sqlite = new \SQLite3($path);
     }
 
     public function executeSQLFromFile(string $path, array $search=[], array $replace=[])

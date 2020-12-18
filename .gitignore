@@ -1,7 +1,3 @@
 vendor/
-smilies_settings.json
-snapshot.html
 config.dev.php
-database.sqlite3
-logs.txt
-smilie_sets/*
+data/*
