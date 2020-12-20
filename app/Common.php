@@ -3,6 +3,7 @@
 require __DIR__.'/../vendor/autoload.php';
 require __DIR__.'/Constants.php';
 require __DIR__.'/AutoUsing/AutoUsing.php';
+require __DIR__.'/CheckSetup.php';
 
 // 加载配置文件
 $config_file_dev = ROOT_DIR.DIRECTORY_SEPARATOR.'config.dev.php';
