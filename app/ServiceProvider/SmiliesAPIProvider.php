@@ -28,13 +28,15 @@ class SmiliesAPIProvider implements ServiceProviderInterface
 
     public static function onPanelSubmit($request, $response, $service, $app)
     {
-        $sorted = $request->headers()->get('sorted', '');
-        $disabled = $request->headers()->get('disabled', '');
+        $sorted = $request->paramsPost()->get('sorted', '');
+        $disabled = $request->paramsPost()->get('disabled', '');
 
         if(empty($sorted) || empty($disabled))
             $response->code(403);
 
-        ManagingPanel::onPanelSubmit($isOriginal, $smilieSet);
+        $service->back();
+
+        ManagingPanel::onPanelSubmit($sorted, $disabled);
     }
 
     public static function onSmiliesAPIRequest($request, $response, $service, $app)

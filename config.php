@@ -91,7 +91,7 @@ define('SMILIE_DIR', DATA_DIR.DIRECTORY_SEPARATOR.'smilies');
 define('SMILIE_URL', '');
 
 // 表情包设置文件
-define('SMILIE_CONFIG_FILE', SMILIE_DIR.DIRECTORY_SEPARATOR.'smilies_settings.json');
+define('SMILIE_CONFIG_FILE', DATA_DIR.DIRECTORY_SEPARATOR.'smilies_settings.json');
 
 // ###########################################################################################
 // #        ______             __            _______       _____          ______             #

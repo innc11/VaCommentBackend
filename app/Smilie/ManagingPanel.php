@@ -27,7 +27,7 @@ class ManagingPanel
                     }
                 </script>
             </head>
-            <body>
+            <body style="width: max-content; margin: 30px auto;">
                 <div class="all-smilie-set-wrap">
                     <div class="all-smilie-set gridly">
                         <div>空空如也</div>
@@ -55,8 +55,6 @@ class ManagingPanel
 
     public static function onPanelSubmit(string $sorted, string $disabled)
     {
-        $service->back();
-
         file_put_contents(SMILIE_CONFIG_FILE, json_encode([
             json_decode($sorted),
             json_decode($disabled)

@@ -53,6 +53,9 @@ class SmilieSystem
     {
         $data = file_exists(SMILIE_CONFIG_FILE)? json_decode(file_get_contents(SMILIE_CONFIG_FILE)):[[],[]];
     
+        // echo(DATA_DIR.DIRECTORY_SEPARATOR.'smilies_settings.json');
+        // var_dump($data);
+
         return (object) [
             'sorted' => $data[0],
             'disabled' => $data[1],
