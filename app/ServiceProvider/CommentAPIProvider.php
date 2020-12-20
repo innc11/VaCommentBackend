@@ -50,16 +50,16 @@ class CommentAPIProvider implements ServiceProviderInterface
         if (!DEVELOPMENT_MODE) { // 不在开发模式时需要检查验证码
             if (!isset($_COOKIE['captcha'])) {
                 $response->code(403);
-                echo(json_encode(['reason' => '没有请求过验证码或者Cookie未能上传'], JSON_UNESCAPED_UNICODE));
+                $response->body(json_encode(['reason' => '没有请求过验证码或者Cookie未能上传'], JSON_UNESCAPED_UNICODE));
                 return;
             } else if (!isset($data['captcha'])) {
                 $response->code(403);
-                echo(json_encode(['reason' => '未输入验证码'], JSON_UNESCAPED_UNICODE));
+                $response->body(json_encode(['reason' => '未输入验证码'], JSON_UNESCAPED_UNICODE));
                 return;
             } else {
                 if (md5(strtolower($data['captcha'])) != $_COOKIE['captcha']) {
                     $response->code(403);
-                    echo(json_encode(['reason' => '验证码不正确'], JSON_UNESCAPED_UNICODE));
+                    $response->body(json_encode(['reason' => '验证码不正确'], JSON_UNESCAPED_UNICODE));
                     return;
                 }
             }
