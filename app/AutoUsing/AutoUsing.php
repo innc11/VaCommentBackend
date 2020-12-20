@@ -15,6 +15,8 @@ define('AUTOLOAD_SEARCH_PATHS', $VC_AUTOLOAD_PATHS);
 
 foreach (AUTOLOAD_SEARCH_PATHS as $path) {
     spl_autoload_register(function ($class_name) use ($path) {
+        $class_name = str_replace('\\', DIRECTORY_SEPARATOR, $class_name);
+        
         // 移除顶级命名空间
         // $class_name = substr($class_name, strpos($class_name, '\\') + 1);
 
