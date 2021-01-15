@@ -24,7 +24,7 @@ class CommentManageProvider implements ServiceProviderInterface
             <input type="text" name="user"></input><br>
 
             password: <br>
-            <input type="text" name="password"></input><br>
+            <input type="password" name="password"></input><br>
 
             <button>Login In</button>
         </form>
