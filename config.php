@@ -124,6 +124,10 @@ define('DEVELOPMENT_MODE', true);
 // 浏览统计（单位秒），超过这个时间以后会被视为新的访客
 define('PERIOD_AS_NEW_VISITOR', 600);
 
+// 后台用户名和密码
+define('ADMIN_USER', 'aaa');
+define('ADMIN_PASSWORD', 'aaa');
+
 /* 
 默认头像，可选值: <留空>, 404, mp, identicon, monsterid, wavatar, retro, robohash, blank
 gravatar_default详细说明具体参考 https://en.gravatar.com/site/implement/images/ 或者 https://valine.js.org/avatar.html

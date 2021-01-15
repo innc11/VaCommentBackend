@@ -27,6 +27,7 @@ $container->register(new ServiceProvider\MailProvider());
 $container->register(new ServiceProvider\CommentAPIProvider());
 $container->register(new ServiceProvider\SmiliesAPIProvider());
 $container->register(new ServiceProvider\CaptchaProvider());
+$container->register(new ServiceProvider\CommentManageProvider());
 
 
 
