@@ -39,7 +39,7 @@ class CommentAPIProvider implements ServiceProviderInterface
         $data = json_decode(file_get_contents('php://input'), true);
 
         // 检查必要的参数
-        $missings = self::checkParameters($data, ['key', 'comment', 'nick', 'content', 'parent']);
+        $missings = self::checkParameters($data, ['key', 'label', 'nick', 'content', 'parent']);
 
         if(count($missings) > 0) {
             $response->code(403);
@@ -73,7 +73,7 @@ class CommentAPIProvider implements ServiceProviderInterface
         $newComment = [
             'parent' => $data['parent']!=-1? $data['parent']:0,
             'key' => urldecode($data['key']),
-            'comment' => $data['comment'],
+            'label' => $data['label'],
             'nick' => $data['nick'],
             'mail' => $data['mail']? $data['mail']:'',
             'website' => $data['website']? $data['website']:'',
@@ -85,8 +85,8 @@ class CommentAPIProvider implements ServiceProviderInterface
         ];
 
         // 插入评论到数据库里
-        $sql = "INSERT INTO 'comments' (key, comment, parent, nick, mail, website, content, approved, time, ip, useragent)".
-                "VALUES (:key, :comment, :parent, :nick, :mail, :website, :content, :approved, :time, :ip, :useragent)";
+        $sql = "INSERT INTO 'comments' (key, label, parent, nick, mail, website, content, approved, time, ip, useragent)".
+                "VALUES (:key, :label, :parent, :nick, :mail, :website, :content, :approved, :time, :ip, :useragent)";
         $db->prepare($sql)->execute($newComment)->end();
 
 
@@ -159,7 +159,7 @@ class CommentAPIProvider implements ServiceProviderInterface
         header('Content-Type:application/json;charset=utf-8');
 
         // 检查必要的参数
-        $missings = self::checkParameters($_GET, ['key', 'comment']);
+        $missings = self::checkParameters($_GET, ['key', 'label']);
 
         if(count($missings) > 0) {
             $response->code(403);
@@ -170,7 +170,7 @@ class CommentAPIProvider implements ServiceProviderInterface
         // 记录数据
         $cookieKey = 'identity-'.md5($_GET['key']);
         if (!isset($_COOKIE[$cookieKey])) {
-            $visitModel = new \Model\VisitModel($_GET['key'], $_GET['comment'], $_SERVER['REMOTE_ADDR'], $_SERVER['HTTP_USER_AGENT']);
+            $visitModel = new \Model\VisitModel($_GET['key'], $_GET['label'], $_SERVER['REMOTE_ADDR'], $_SERVER['HTTP_USER_AGENT']);
             call_user_func_array($container['analysis']['visit'], [$db, $visitModel]);
         }
         \Utils\Utils::setCookie($cookieKey, '123', ['expires' => time() + PERIOD_AS_NEW_VISITOR]);

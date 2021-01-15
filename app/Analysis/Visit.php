@@ -8,12 +8,12 @@ class Visit
 {
     public static function newVisitor($db, VisitModel $visit)
     {
-        $sql = "INSERT INTO 'views' (key, comment, time, ip, useragent)".
-        "VALUES (:key, :comment, :time, :ip, :useragent)";
+        $sql = "INSERT INTO 'views' (key, label, time, ip, useragent)".
+        "VALUES (:key, :label, :time, :ip, :useragent)";
 
         $db->prepare($sql)->execute([
             'key' => $visit->key,
-            'comment' => $visit->pageComment,
+            'label' => $visit->pageLabel,
             'time' => time(),
             'ip' => $visit->ip,
             'useragent' => $visit->useragent

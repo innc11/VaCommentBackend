@@ -78,7 +78,7 @@ class CommentManageProvider implements ServiceProviderInterface
                 <td class="id"><?php echo($row['id']); ?></td>
                 <td class="parent"><?php echo($row['parent']); ?></td>
                 <td class="key"><?php echo($row['key']); ?></td>
-                <td class="label"><?php echo($row['comment']); ?></td>
+                <td class="label"><?php echo($row['label']); ?></td>
                 <td class="nick"><?php echo($row['nick']); ?></td>
                 <td class="mail"><?php echo($row['mail']); ?></td>
                 <td class="website"><?php echo($row['website']); ?></td>
@@ -126,7 +126,7 @@ class CommentManageProvider implements ServiceProviderInterface
             <tr><td>ID</td><td><?php echo($row['id']); ?></td></tr>
             <tr><td>Parent</td><td><?php echo($row['parent']); ?></td></tr>
             <tr><td>Key</td><td><?php echo($row['key']); ?></td></tr>
-            <tr><td>Comment</td><td><?php echo($row['comment']); ?></td></tr>
+            <tr><td>Label</td><td><?php echo($row['label']); ?></td></tr>
             <tr><td>Nick</td><td><?php echo($row['nick']); ?></td></tr>
             <tr><td>Mail</td><td><?php echo($row['mail']); ?></td></tr>
             <tr><td>Website</td><td><?php echo($row['website']); ?></td></tr>
