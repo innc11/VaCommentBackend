@@ -39,7 +39,7 @@ class CommentAPIProvider implements ServiceProviderInterface
         $data = json_decode(file_get_contents('php://input'), true);
 
         // 检查必要的参数
-        $missings = self::checkParameters($data, ['url', 'title', 'nick', 'content', 'parent']);
+        $missings = self::checkParameters($data, ['key', 'comment', 'nick', 'content', 'parent']);
 
         if(count($missings) > 0) {
             $response->code(403);
@@ -72,8 +72,8 @@ class CommentAPIProvider implements ServiceProviderInterface
         // 准备插入新的评论
         $newComment = [
             'parent' => $data['parent']!=-1? $data['parent']:0,
-            'url' => urldecode($data['url']),
-            'title' => $data['title'],
+            'key' => urldecode($data['key']),
+            'comment' => $data['comment'],
             'nick' => $data['nick'],
             'mail' => $data['mail']? $data['mail']:'',
             'website' => $data['website']? $data['website']:'',
@@ -85,8 +85,8 @@ class CommentAPIProvider implements ServiceProviderInterface
         ];
 
         // 插入评论到数据库里
-        $sql = "INSERT INTO 'comments' (url, title, parent, nick, mail, website, content, approved, time, ip, useragent)".
-                "VALUES (:url, :title, :parent, :nick, :mail, :website, :content, :approved, :time, :ip, :useragent)";
+        $sql = "INSERT INTO 'comments' (key, comment, parent, nick, mail, website, content, approved, time, ip, useragent)".
+                "VALUES (:key, :comment, :parent, :nick, :mail, :website, :content, :approved, :time, :ip, :useragent)";
         $db->prepare($sql)->execute($newComment)->end();
 
 
@@ -119,7 +119,7 @@ class CommentAPIProvider implements ServiceProviderInterface
         // 如果有收件人的话就发送
         if ($recipientName && $recipientMail)
         {
-            $permalink = MAIL_SITE_URL . $data['url'];
+            $permalink = MAIL_SITE_URL . $data['key'];
 
             $params = [
                 'time' => time(),
@@ -159,7 +159,7 @@ class CommentAPIProvider implements ServiceProviderInterface
         header('Content-Type:application/json;charset=utf-8');
 
         // 检查必要的参数
-        $missings = self::checkParameters($_GET, ['url', 'title']);
+        $missings = self::checkParameters($_GET, ['key', 'comment']);
 
         if(count($missings) > 0) {
             $response->code(403);
@@ -168,20 +168,20 @@ class CommentAPIProvider implements ServiceProviderInterface
         }
 
         // 记录数据
-        $cookieKey = 'identity-'.md5($_GET['url']);
+        $cookieKey = 'identity-'.md5($_GET['key']);
         if (!isset($_COOKIE[$cookieKey])) {
-            $visitModel = new \Model\VisitModel($_GET['url'], $_GET['title'], $_SERVER['REMOTE_ADDR'], $_SERVER['HTTP_USER_AGENT']);
+            $visitModel = new \Model\VisitModel($_GET['key'], $_GET['comment'], $_SERVER['REMOTE_ADDR'], $_SERVER['HTTP_USER_AGENT']);
             call_user_func_array($container['analysis']['visit'], [$db, $visitModel]);
         }
         \Utils\Utils::setCookie($cookieKey, '123', ['expires' => time() + PERIOD_AS_NEW_VISITOR]);
         
 
         // 查询数据
-        $url = $_GET['url'];
+        $key = $_GET['key'];
         $pagination = isset($_GET['pagination']) && $_GET['pagination']>=0? $_GET['pagination']:0;
 
-        $sql = "select * from 'comments' where url = :url and parent = 0 order by time desc";
-        $rows = $db->prepare($sql)->execute(['url' => $url])->fetchAll();
+        $sql = "select * from 'comments' where key = :key and parent = 0 order by time desc";
+        $rows = $db->prepare($sql)->execute(['key' => $key])->fetchAll();
 
         $data = [];
 
