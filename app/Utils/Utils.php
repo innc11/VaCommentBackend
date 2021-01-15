@@ -72,14 +72,14 @@ class Utils
         return $headers;
     }
 
-    public static function setCookie($key, $value, $secure, $paragmeters=[])
+    public static function setCookie($key, $value, $_expires=0)
     {
         // SameSite => None || Lax  || Strict
+        
+        $secure = isset($_SERVER["HTTPS"]);
+        $timeout = date('D, d-M-Y H:i:s', $_expires).' GMT';
 
-        $lifespan = 0;
-        $timeout = date('D, d-M-Y H:i:s', time()+1).' GMT';
-
-        $expires = $lifespan>0? "expires=$timeout;":'';
+        $expires = $_expires>0? "expires=$timeout;":'';
         $sameSite = $secure? 'SameSite=None; Secure;':'';
 
         header("Set-Cookie: $key=$value; $expires $sameSite");
