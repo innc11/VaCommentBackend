@@ -173,7 +173,7 @@ class CommentAPIProvider implements ServiceProviderInterface
             $visitModel = new \Model\VisitModel($_GET['key'], $_GET['label'], $_SERVER['REMOTE_ADDR'], $_SERVER['HTTP_USER_AGENT']);
             call_user_func_array($container['analysis']['visit'], [$db, $visitModel]);
         }
-        \Utils\Utils::setCookie($cookieKey, '123', ['expires' => time() + PERIOD_AS_NEW_VISITOR]);
+        \Utils\Utils::setCookie($cookieKey, '123', $request->isSecure(), ['expires' => time() + PERIOD_AS_NEW_VISITOR]);
         
 
         // 查询数据

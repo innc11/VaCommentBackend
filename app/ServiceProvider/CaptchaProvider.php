@@ -20,7 +20,7 @@ class CaptchaProvider implements ServiceProviderInterface
         $code = $captcha->getCode();
 
         // $_SESSION["captcha"] = $captcha;
-        \Utils\Utils::setCookie('captcha', md5(strtolower($code)));
+        \Utils\Utils::setCookie('captcha', md5(strtolower($code)), $request->isSecure());
     }
 }
 

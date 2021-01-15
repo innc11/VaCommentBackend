@@ -72,20 +72,17 @@ class Utils
         return $headers;
     }
 
-    public static function setCookie($key, $value, $paragmeters=[])
+    public static function setCookie($key, $value, $secure, $paragmeters=[])
     {
-        $ssl = isset($_SERVER['HTTPS']);
-        $cfg = [ 'expires' => 0 ]; // 跟随 section 过期
-        
-        if ($ssl) {
-            array_merge($cfg, [
-                'samesite' => 'None', // 'samesite' => 'None' // None || Lax  || Strict
-                'secure' => true,
-            ]);
-        }
+        // SameSite => None || Lax  || Strict
 
-        array_merge($cfg, $paragmeters);
-        setcookie($key, $value, $cfg);
+        $lifespan = 0;
+        $timeout = date('D, d-M-Y H:i:s', time()+1).' GMT';
+
+        $expires = $lifespan>0? "expires=$timeout;":'';
+        $sameSite = $secure? 'SameSite=None; Secure;':'';
+
+        header("Set-Cookie: $key=$value; $expires $sameSite");
     }
 
     public static function getDir($path = '')
