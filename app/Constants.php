@@ -1,5 +1,7 @@
 <?php
 
+define('APP_VER', '1.1');
+
 // Root directory
 define('ROOT_DIR', dirname(__DIR__));
 
