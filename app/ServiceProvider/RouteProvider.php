@@ -14,7 +14,7 @@ class RouteProvider implements ServiceProviderInterface
         $container['router'] = $router;
 
         $router->onHttpError(function($code, $router, $matched, $methods_matched, $http_exception) {
-            $router->response()->body('It seems something wrong! '.$code.'('.$router->request()->uri().')');
+            $router->response()->body('It seems something goes wrong! '.$code.'('.$router->request()->uri().')');
         });
 
         $router->respond(function($request, $response, $service, $app) use($container) {
