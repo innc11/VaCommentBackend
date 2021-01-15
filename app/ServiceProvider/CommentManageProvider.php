@@ -197,7 +197,7 @@ class CommentManageProvider implements ServiceProviderInterface
             self::beginHtml();
             ?>
             <div>Wrong Username or Password</div>
-            <form action="comment_manage_login" method="post">
+            <form action="comment_manage_login" method="get">
                 <button>Retry</button>
             </form>
             <?php
