@@ -1,13 +1,12 @@
 <?php
 
-define('APP_VER', '1.2.2');
+define('APP_VER', '1.2.3');
 
 // Root directory
 define('ROOT_DIR', dirname(__DIR__));
 
 // App directory
 define('APP_DIR',  ROOT_DIR.DIRECTORY_SEPARATOR.'app');
-
 
 // Assets directory
 define('ASSET_DIR',  ROOT_DIR.DIRECTORY_SEPARATOR.'assets');

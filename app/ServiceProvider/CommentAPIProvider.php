@@ -197,6 +197,7 @@ class CommentAPIProvider implements ServiceProviderInterface
                 'nick' => $row['nick'],
                 'website' => $row['mail'] != MAIL_OWNER_MAIL? $row['website']:MAIL_SITE_URL, // 如果是博主就不需要写网站，就算写了也会变成默认站点地址
                 'isauthor' => $row['mail'] == MAIL_OWNER_MAIL,
+                'authorlabel' => MAIL_OWNER_NAME,
                 'useragent' => $row['useragent'],
                 'content' => \Smilie\SmilieSystem::showSmilies($row['content']),
                 'time' => $row['time'],
@@ -223,6 +224,7 @@ class CommentAPIProvider implements ServiceProviderInterface
                 'nick' => $reply['nick'],
                 'website' => $reply['website'],
                 'isauthor' => $reply['mail'] == MAIL_OWNER_MAIL,
+                'authorlabel' => MAIL_OWNER_NAME,
                 'useragent' => $reply['useragent'],
                 'content' => \Smilie\SmilieSystem::showSmilies($reply['content']),
                 'time' => $reply['time'],
