@@ -104,7 +104,7 @@ class MailClient
             '{RecipientMail}',      htmlspecialchars($notification->recipient->mail),
             '{RecipientWebsite}',   htmlspecialchars($notification->recipient->website),
             
-            '{Permalink}',          htmlspecialchars($notification->permalink), // 文章链接
+            '{Permalink}',          $notification->permalink, // 文章链接
             '{Time}',               $notification->getFormatedDateTime(), // 格式化过的
             '{RawTime}',            $notification->time, // 时间戳
         ];
