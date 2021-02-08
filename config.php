@@ -16,7 +16,7 @@ define('MAIL_SITE_TITLE', '');
 // 站点副标题
 define('MAIL_SITE_SUBTITLE', '');
 
-// 站点URL，用于邮件内的超链接
+// 站点域名，用于邮件内的超链接
 define('MAIL_SITE_URL', '');
 
 // 邮件主题/标题
