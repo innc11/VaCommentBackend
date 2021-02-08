@@ -98,13 +98,13 @@ class MailClient
 
             '{AuthorName}',         htmlspecialchars($notification->author->name),
             '{AuthorMail}',         htmlspecialchars($notification->author->mail),
-            '{AuthorWebsite}',      htmlspecialchars($notification->author->website),
+            '{AuthorWebsite}',      urldecode(htmlspecialchars($notification->author->website)),
 
             '{RecipientName}',      htmlspecialchars($notification->recipient->name),
             '{RecipientMail}',      htmlspecialchars($notification->recipient->mail),
-            '{RecipientWebsite}',   htmlspecialchars($notification->recipient->website),
+            '{RecipientWebsite}',   urldecode(htmlspecialchars($notification->recipient->website)),
             
-            '{Permalink}',          $notification->permalink, // 文章链接
+            '{Permalink}',          urldecode(htmlspecialchars($notification->permalink)), // 文章链接
             '{Time}',               $notification->getFormatedDateTime(), // 格式化过的
             '{RawTime}',            $notification->time, // 时间戳
         ];
