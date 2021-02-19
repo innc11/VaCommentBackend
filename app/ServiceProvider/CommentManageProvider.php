@@ -3,16 +3,15 @@
 namespace ServiceProvider;
 
 use Pimple\Container;
-use Pimple\ServiceProviderInterface;
 
-class CommentManageProvider implements ServiceProviderInterface
+class CommentManageProvider extends ServiceProviderBase
 {
-    public function register(Container $container)
+    public function onRegisterRule(Container $container)
     {
-        $container['router']->respond('GET',  '/comment_manage_login', fn(...$params) => self::onLogin(...$params),);
-        $container['router']->respond('POST',  '/comment_manage_home', fn(...$params) => self::onListComment(...$params),);
-        $container['router']->respond('POST', '/comment_manage_erase', fn(...$params) => self::onDoErase(...$params),);
-        $container['router']->respond('POST', '/comment_manage_erase_comfirm', fn(...$params) => self::onEraseComfirm(...$params),);
+        self::registerRule('GET',  '/comment_manage_login', 'onLogin');
+        self::registerRule('POST', '/comment_manage_home', 'onListComment');
+        self::registerRule('POST', '/comment_manage_erase', 'onDoErase');
+        self::registerRule('POST', '/comment_manage_erase_comfirm', 'onEraseComfirm');
     }
 
     public static function onLogin($request, $response, $service, $app)

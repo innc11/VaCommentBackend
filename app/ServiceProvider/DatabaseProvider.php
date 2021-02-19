@@ -3,14 +3,15 @@
 namespace ServiceProvider;
 
 use Pimple\Container;
-use Pimple\ServiceProviderInterface;
 use Database\PdoSqliteDatabase;
 
-class DatabaseProvider implements ServiceProviderInterface
+class DatabaseProvider extends ServiceProviderBase
 {
-    public function register(Container $container)
+    public function onRegisterRule(Container $container)
     {
-        $container['database'] = fn() => new PdoSqliteDatabase('sqlite:'.DATABASE_PATH);
+        $container['database'] = function() { 
+            return new PdoSqliteDatabase('sqlite:'.DATABASE_PATH);
+        };
     }
 }
 

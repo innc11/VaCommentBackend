@@ -6,9 +6,9 @@ use Pimple\Container;
 use Pimple\ServiceProviderInterface;
 use Cors\CorsHandle;
 
-class RouteProvider implements ServiceProviderInterface
+class RouteProvider extends ServiceProviderBase
 {
-    public function register(Container $container)
+    public function onRegisterRule(Container $container)
     {
         $router = new \Klein\Klein();
         $container['router'] = $router;
@@ -18,7 +18,9 @@ class RouteProvider implements ServiceProviderInterface
         });
 
         $router->respond(function($request, $response, $service, $app) use($container) {
-            $app->register('container', fn() => $container);
+            $app->register('container', function() use($container) {
+                return $container;
+            });
         });
 
         // 处理CORS请求

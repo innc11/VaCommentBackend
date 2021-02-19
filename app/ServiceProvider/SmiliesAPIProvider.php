@@ -7,21 +7,16 @@ use Pimple\ServiceProviderInterface;
 use Panel\SmileSetManagingPanel;
 use Smilie\SmilieSystem;
 
-class SmiliesAPIProvider implements ServiceProviderInterface
+class SmiliesAPIProvider extends ServiceProviderBase
 {
-    public function register(Container $container)
+    public function onRegisterRule(Container $container)
     {
-        // 请求面板时
-        $container['router']->respond('GET', '/smilie_set_panel', fn(...$params) => self::onPanelRender(...$params),);
-
-        // 面板返回时
-        $container['router']->respond('POST', '/smilie_api', fn(...$params) => self::onPanelSubmit(...$params),);
-
-        // 调用表情API时
-        $container['router']->respond('GET', '/smilie_api/[:set]?', fn(...$params) => self::onSmiliesAPIRequest(...$params),);
+        self::registerRule('GET',  '/smilie_set_panel', 'onPanelRender');
+        self::registerRule('POST', '/smilie_api', 'onPanelSubmit');
+        self::registerRule('GET',  '/smilie_api/[:set]?', 'onSmiliesAPIRequest');
     }
 
-    public static function onPanelRender($request, $response, $service, $app)
+    public function onPanelRender($request, $response, $service, $app)
     {
         $submitingAddress = '/smilie_api';
 
@@ -72,7 +67,7 @@ class SmiliesAPIProvider implements ServiceProviderInterface
         <?php
     }
 
-    public static function onPanelSubmit($request, $response, $service, $app)
+    public function onPanelSubmit($request, $response, $service, $app)
     {
         $sorted = $request->paramsPost()->get('sorted', '');
         $disabled = $request->paramsPost()->get('disabled', '');
@@ -88,7 +83,7 @@ class SmiliesAPIProvider implements ServiceProviderInterface
         ]));
     }
 
-    public static function onSmiliesAPIRequest($request, $response, $service, $app)
+    public function onSmiliesAPIRequest($request, $response, $service, $app)
     {
         // 返回Json格式
         header('Content-Type:application/json;charset=utf-8');

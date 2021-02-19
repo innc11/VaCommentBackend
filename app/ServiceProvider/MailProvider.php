@@ -3,17 +3,16 @@
 namespace ServiceProvider;
 
 use Pimple\Container;
-use Pimple\ServiceProviderInterface;
 use Model\CommentNotificationModel;
 use Mail\MailClient;
 
-class MailProvider implements ServiceProviderInterface
+class MailProvider extends ServiceProviderBase
 {
-    public function register(Container $container)
+    public function onRegisterRule(Container $container)
     {
         $container['mail'] = (object)[
-            'send' => fn(...$params) => self::sendMail(...$params),
-            'log' => fn(...$params) => self::log(...$params),
+            'send' => function(...$params){ self::sendMail(...$params); },
+            'log' => function(...$params){ self::log(...$params); },
         ];
     }
 

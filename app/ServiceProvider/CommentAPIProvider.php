@@ -3,18 +3,17 @@
 namespace ServiceProvider;
 
 use Pimple\Container;
-use Pimple\ServiceProviderInterface;
 use Model\CommentNotificationModel;
 
-class CommentAPIProvider implements ServiceProviderInterface
+class CommentAPIProvider extends ServiceProviderBase
 {
-    public function register(Container $container)
+    public function onRegisterRule(Container $container)
     {
-        $container['router']->respond('GET', '/comment', fn(...$params) => self::getComments(...$params),);
-        $container['router']->respond('POST', '/comment', fn(...$params) => self::publishComment(...$params),);
+        self::registerRule('GET',  '/comment', 'getComments');
+        self::registerRule('POST', '/comment', 'publishComment');
     }
 
-    public static function checkParameters($array, $fields)
+    public function checkParameters($array, $fields)
     {
         $missings = [];
         foreach ($fields as $f) {
@@ -26,7 +25,7 @@ class CommentAPIProvider implements ServiceProviderInterface
         return $missings;
     }
 
-    public static function publishComment($request, $response, $service, $app)
+    public function publishComment($request, $response, $service, $app)
     {
         $container = $app->container;
         $db = $container['database'];
@@ -149,7 +148,7 @@ class CommentAPIProvider implements ServiceProviderInterface
         echo('[]'); // 避免JQ的DataType对不上导致无法执行success回调
     }
 
-    public static function getComments($request, $response, $service, $app)
+    public function getComments($request, $response, $service, $app)
     {
         $container = $app->container;
         $db = $container['database'];
@@ -212,7 +211,7 @@ class CommentAPIProvider implements ServiceProviderInterface
         ]));
     }
 
-    private static function getRepliesOfComment($db, $replyId)
+    private function getRepliesOfComment($db, $replyId)
     {
         $sql = "select * from 'comments' where parent = :parent order by time desc";
         $replies = $db->prepare($sql)->execute(['parent' => $replyId])->fetchAll();
