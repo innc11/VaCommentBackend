@@ -4,9 +4,9 @@ namespace Model;
 
 class UserModel extends ModelBase
 {
-    public string $name;
-    public string $mail;
-    public string $website;
+    public $name; // string
+    public $mail; // string
+    public $website; // string
 
     public function __construct(string $name, string $mail='', string $website='')
     {

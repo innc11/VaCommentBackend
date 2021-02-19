@@ -4,10 +4,10 @@ namespace Model;
 
 class VisitModel extends ModelBase
 {
-    public string $key;
-    public string $pageLabel;
-    public string $ip;
-    public string $useragent;
+    public $key; // string
+    public $pageLabel; // string
+    public $ip; // string
+    public $useragent; // string
 
     public function __construct(string $key, string $pageLabel, string $ip, string $useragent)
     {

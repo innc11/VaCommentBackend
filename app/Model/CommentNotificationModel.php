@@ -4,9 +4,9 @@ namespace Model;
 
 class CommentNotificationModel extends CommentModel
 {
-    public string $subject;
-    public string $purpose; // '评论通知' or '评论审核'
-    public bool $testMode = false;
+    public $subject; // string
+    public $purpose; // string '评论通知' or '评论审核'
+    public $testMode = false;  // bool
 
     public static function FromArray(array $obj)
     {

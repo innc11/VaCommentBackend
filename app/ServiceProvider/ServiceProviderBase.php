@@ -9,7 +9,7 @@ use Pimple\ServiceProviderInterface;
 
 abstract class ServiceProviderBase implements ServiceProviderInterface
 {
-    public Container $container;
+    public $container; // Container
 
     public function register(Container $container)
     {

@@ -4,11 +4,11 @@ namespace Model;
 
 class CommentModel extends ModelBase
 {
-    public int $time;
-    public string $content;
-    public UserModel $author;
-    public UserModel $recipient;
-    public string $permalink;
+    public $time; // int
+    public $content; // string
+    public $author; // UserModel
+    public $recipient; // UserModel
+    public $permalink; // string
 
     public function getFormatedDateTime()
     {
