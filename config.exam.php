@@ -11,22 +11,22 @@
 // ###########################################################################################
 
 // 站点标题
-define('MAIL_SITE_TITLE', '夜街尘');
+define('MAIL_SITE_TITLE', '');
 
 // 站点副标题
-define('MAIL_SITE_SUBTITLE', '回望间，便是光年之遥。眨眼间，已是千年之外');
+define('MAIL_SITE_SUBTITLE', '');
 
 // 站点域名，用于邮件内的超链接
-define('MAIL_SITE_URL', 'https://innc11.cn');
+define('MAIL_SITE_URL', '');
 
 // 邮件主题/标题
-define('MAIL_SUBJECT', '您在[夜街尘]的留言有了新的回应');
+define('MAIL_SUBJECT', '');
 
 // 博主邮箱，用于提示是博主和显示<作者>小标签
-define('MAIL_OWNER_MAIL', 'pm@innc11.cn');
+define('MAIL_OWNER_MAIL', '');
 
 // 博主称呼，主要用于logs和邮件通知
-define('MAIL_OWNER_NAME', '开发者');
+define('MAIL_OWNER_NAME', '作者');
 
 // 邮件日志文件
 define('MAIL_LOG_FILE', DATA_DIR.DIRECTORY_SEPARATOR.'logs.log');
@@ -54,13 +54,13 @@ define('MAIL_SNAPSHOT_FILE', DATA_DIR.DIRECTORY_SEPARATOR.'snapshot.html');
 // ###########################################################################################
 
 // SMTP 服务器地址
-define('SMTP_HOST', 'smtpdm.aliyun.com');
+define('SMTP_HOST', '');
 
 // SMTP 用户名
-define('SMTP_USERNAME', 'noreply@notify.innc11.cn');
+define('SMTP_USERNAME', '');
 
 // SMTP 密码
-define('SMTP_PASSWORD', 'tdg5DG2dgGf24');
+define('SMTP_PASSWORD', '');
 
 // SMTP 加密方式, 'ssl' or 'tls' or ''
 define('SMTP_SECURE', 'ssl');
@@ -69,10 +69,10 @@ define('SMTP_SECURE', 'ssl');
 define('SMTP_PORT', 465);
 
 // SMTP 发件邮箱(通常需要和SMTP_USERNAME一致)
-define('SMTP_FROM_MAIL', 'noreply@notify.innc11.cn');
+define('SMTP_FROM_MAIL', '');
 
 // SMTP 发件名（对方邮箱里的'发件人'名字）
-define('SMTP_FROM_NAME', '小管家');
+define('SMTP_FROM_NAME', '');
 
 // ###########################################################################################
 // #          _______     ____    ____      _____      _____         _____      _________    #
@@ -87,8 +87,8 @@ define('SMTP_FROM_NAME', '小管家');
 // Smilie directory
 define('SMILIE_DIR', DATA_DIR.DIRECTORY_SEPARATOR.'smilies');
 
-// 表情包文件夹, 用于实际访问（如果使用云计算，记得放开安全策略）
-define('SMILIE_URL', 'https://cdn.jsdelivr.net/gh/innc11/BlogSmilies@latest/');
+// 表情包文件夹, 用于实际访问（如果使用云计算，记得放开安全策略），需要加上 /
+define('SMILIE_URL', '');
 
 // 表情包设置文件
 define('SMILIE_CONFIG_FILE', DATA_DIR.DIRECTORY_SEPARATOR.'smilies_settings.json');
@@ -119,14 +119,14 @@ define('TIMEZONE', 'Asia/Shanghai');
 define('PAGE_CAPACITY', 5);
 
 // 开发模式下不检查验证码
-define('DEVELOPMENT_MODE', false);
+define('DEVELOPMENT_MODE', true);
 
 // 浏览统计（单位秒），超过这个时间以后会被视为新的访客
 define('PERIOD_AS_NEW_VISITOR', 600);
 
 // 后台用户名和密码
-define('ADMIN_USER', 'aa');
-define('ADMIN_PASSWORD', 'aa');
+define('ADMIN_USER', 'aaa');
+define('ADMIN_PASSWORD', 'aaa');
 
 /* 
 默认头像，可选值: <留空>, 404, mp, identicon, monsterid, wavatar, retro, robohash, blank
