@@ -4,7 +4,7 @@ namespace Exception;
 
 use \Exception;
 
-class ConfigFileNotFoundException extends Exception
+class ConfigFileNotFoundException extends BaseExceptionWithMessages
 {
     public function __construct($path)
     {

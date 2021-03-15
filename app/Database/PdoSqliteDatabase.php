@@ -18,9 +18,6 @@ class PdoSqliteDatabase
         // 没效果,故注释
         // $this->pdo->setAttribute(PDO::ATTR_STRINGIFY_FETCHES, false);
         // $this->pdo->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
-
-        // 初始化数据库
-        $this->executeSQLFromFile(ASSET_DIR.DIRECTORY_SEPARATOR.'sql'.DIRECTORY_SEPARATOR.'initialize.sql');
     }
 
     public function executeSQLFromFile(string $path, array $search=[], array $replace=[])

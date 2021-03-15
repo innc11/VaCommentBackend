@@ -1,7 +1,7 @@
 {
     "require": {
-        "klein/klein": "^2.1",
         "phpmailer/phpmailer": "^6.2",
-        "pimple/pimple": "^3.3"
+        "pimple/pimple": "^3.3",
+        "nikic/fast-route": "^1.3"
     }
 }

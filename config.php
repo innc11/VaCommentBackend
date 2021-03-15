@@ -29,13 +29,13 @@ define('MAIL_OWNER_MAIL', 'pm@innc11.cn');
 define('MAIL_OWNER_NAME', '开发者');
 
 // 邮件日志文件
-define('MAIL_LOG_FILE', DATA_DIR.DIRECTORY_SEPARATOR.'logs.log');
+define('MAIL_LOG_FILE', DATA_DIR.DIRECTORY_SEPARATOR.'mails.log');
 
 // 邮件模板文件
 define('MAIL_TEMPLATE_FILE', DATA_DIR.DIRECTORY_SEPARATOR.'template.html');
 
-// 测试模式，处于不会真的发送邮件（但日志还是有的）
-define('MAIL_TEST_MODE', true);
+// 测试模式（不会真的发送邮件，但日志还是有的）
+define('MAIL_TEST_MODE', false);
 
 // 保存最后的邮件内容快照（For debuging）
 define('MAIL_SNAPSHOT_ENABLE', true);
@@ -60,7 +60,7 @@ define('SMTP_HOST', 'smtpdm.aliyun.com');
 define('SMTP_USERNAME', 'noreply@notify.innc11.cn');
 
 // SMTP 密码
-define('SMTP_PASSWORD', 'tdg5DG2dgGf24');
+define('SMTP_PASSWORD', 'shrnw65983DHBG');
 
 // SMTP 加密方式, 'ssl' or 'tls' or ''
 define('SMTP_SECURE', 'ssl');
@@ -87,7 +87,7 @@ define('SMTP_FROM_NAME', '小管家');
 // Smilie directory
 define('SMILIE_DIR', DATA_DIR.DIRECTORY_SEPARATOR.'smilies');
 
-// 表情包文件夹, 用于实际访问（如果使用云计算，记得放开安全策略）
+// 表情包文件夹, 用于实际访问（如果使用云计算，记得放开安全策略），末尾需要加上 /
 define('SMILIE_URL', 'https://cdn.jsdelivr.net/gh/innc11/BlogSmilies@latest/');
 
 // 表情包设置文件
@@ -112,6 +112,12 @@ define('CORS_ALLOW_HOST', 'http://127.0.0.1:4001');
 // Sqlite数据库文件的路径
 define('DATABASE_PATH', DATA_DIR.DIRECTORY_SEPARATOR.'database.sqlite3');
 
+// 日志文件
+define('LOG_FILE', DATA_DIR.DIRECTORY_SEPARATOR.'logs.log');
+
+// 是否在异常中打印调用栈信息
+define('PRINT_TRACEBACK', true);
+
 // 时区设置(参考 https://www.php.net/manual/zh/timezones.php )
 define('TIMEZONE', 'Asia/Shanghai');
 
@@ -122,7 +128,7 @@ define('PAGE_CAPACITY', 5);
 define('DEVELOPMENT_MODE', false);
 
 // 浏览统计（单位秒），超过这个时间以后会被视为新的访客
-define('PERIOD_AS_NEW_VISITOR', 600);
+define('PERIOD_AS_NEW_VISITOR', 10);
 
 // 后台用户名和密码
 define('ADMIN_USER', 'aa');

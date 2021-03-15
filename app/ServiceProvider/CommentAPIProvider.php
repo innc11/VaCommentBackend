@@ -5,68 +5,34 @@ namespace ServiceProvider;
 use Pimple\Container;
 use Model\CommentNotificationModel;
 
-class CommentAPIProvider extends ServiceProviderBase
+class CommentAPIProvider extends Base\ServiceProviderBase
 {
-    public function onRegisterRule(Container $container)
+    public function onRegisterRule(Container &$container)
     {
         self::registerRule('GET',  '/comment', 'getComments');
         self::registerRule('POST', '/comment', 'publishComment');
     }
 
-    public function checkParameters($array, $fields)
+    public function publishComment(array $params)
     {
-        $missings = [];
-        foreach ($fields as $f) {
-            if (trim($f)) {
-                if (!isset($array[$f]) || !$array[$f])
-                    $missings[] = $f;
-            }
-        }
-        return $missings;
-    }
+        $db = self::getService('database');
+        $mailSystem = $this->container['mail'];
 
-    public function publishComment($request, $response, $service, $app)
-    {
-        $container = $app->container;
-        $db = $container['database'];
-        $mailSystem = $container['mail'];
-
-        // 返回Json格式
-        header('Content-Type:application/json;charset=utf-8');
-
-        // 获取请求的body
         $data = json_decode(file_get_contents('php://input'), true);
 
         // 检查必要的参数
-        $missings = self::checkParameters($data, ['key', 'label', 'nick', 'content', 'parent']);
+        \Utils\Utils::checkMissingParameters2($data, ['key', 'label', 'nick', 'content', 'parent']);
 
-        if(count($missings) > 0) {
-            $response->code(403);
-            $response->body('缺少参数: '.json_encode($missings));
-            return;
-        }
-        
         if (!DEVELOPMENT_MODE) { // 不在开发模式时需要检查验证码
             if (!isset($_COOKIE['captcha'])) {
-                $response->code(403);
-                $response->body(json_encode(['reason' => '没有请求过验证码或者Cookie未能上传'], JSON_UNESCAPED_UNICODE));
-                return;
+                throw new \Exception\WrongCaptchaException('没有请求过验证码或者Cookie未能上传');
             } else if (!isset($data['captcha'])) {
-                $response->code(403);
-                $response->body(json_encode(['reason' => '未输入验证码'], JSON_UNESCAPED_UNICODE));
-                return;
+                throw new \Exception\WrongCaptchaException('未输入验证码');
             } else {
-                if (md5(strtolower($data['captcha'])) != $_COOKIE['captcha']) {
-                    $response->code(403);
-                    $response->body(json_encode(['reason' => '验证码不正确'], JSON_UNESCAPED_UNICODE));
-                    return;
-                }
+                if (md5(strtolower($data['captcha'])) != $_COOKIE['captcha'])
+                    throw new \Exception\WrongCaptchaException('验证码不正确');
             }
         }
-
-        // 销毁验证码
-        if (isset($_SESSION) && isset($_SESSION['captcha']))
-            unset($_SESSION['captcha']);
 
         // 准备插入新的评论
         $newComment = [
@@ -87,7 +53,6 @@ class CommentAPIProvider extends ServiceProviderBase
         $sql = "INSERT INTO 'comments' (key, label, parent, nick, mail, website, content, approved, time, ip, useragent)".
                 "VALUES (:key, :label, :parent, :nick, :mail, :website, :content, :approved, :time, :ip, :useragent)";
         $db->prepare($sql)->execute($newComment)->end();
-
 
         // 评论通知------------------------------
         $recipientMail = '';
@@ -145,34 +110,24 @@ class CommentAPIProvider extends ServiceProviderBase
             call_user_func_array($mailSystem->send, [$params]);
         }
 
+        header('Content-Type:application/json;charset=utf-8');
         echo('[]'); // 避免JQ的DataType对不上导致无法执行success回调
     }
 
-    public function getComments($request, $response, $service, $app)
+    public function getComments(array $params)
     {
-        $container = $app->container;
-        $db = $container['database'];
+        $db = self::getService('database');
         $pageCapacity = PAGE_CAPACITY;
-
-        // 返回Json格式
-        header('Content-Type:application/json;charset=utf-8');
-
-        // 检查必要的参数
-        $missings = self::checkParameters($_GET, ['key', 'label']);
-
-        if(count($missings) > 0) {
-            $response->code(403);
-            $response->body('缺少参数: '.json_encode($missings));
-            return;
-        }
+        
+        \Utils\Utils::checkMissingParameters2($_GET, ['key', 'label']);
 
         // 记录数据
-        $cookieKey = 'identity-'.md5($_GET['key']);
-        if (!isset($_COOKIE[$cookieKey])) {
+        $cookieKey = 'viewed-page-'.md5($_GET['key']);
+        if (!isset($_COOKIE[$cookieKey]) || $_COOKIE[$cookieKey] < time()) {
             $visitModel = new \Model\VisitModel($_GET['key'], $_GET['label'], $_SERVER['REMOTE_ADDR'], $_SERVER['HTTP_USER_AGENT']);
-            call_user_func_array($container['analysis']['visit'], [$db, $visitModel]);
+            call_user_func_array($this->container['analysis']['visit'], [$db, $visitModel]);
         }
-        \Utils\Utils::setCookie($cookieKey, '123', time() + PERIOD_AS_NEW_VISITOR);
+        \Utils\Utils::setCookie($cookieKey, (string)(time() + PERIOD_AS_NEW_VISITOR), time() + PERIOD_AS_NEW_VISITOR);
         
 
         // 查询数据
@@ -204,6 +159,7 @@ class CommentAPIProvider extends ServiceProviderBase
             ];
         }
 
+        header('Content-Type:application/json;charset=utf-8');
         echo(json_encode([
             'comments' => $data,
             'pages' => intval($commentCount / $pageCapacity) + ($commentCount % $pageCapacity>0? 1: 0),

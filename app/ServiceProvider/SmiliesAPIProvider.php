@@ -3,22 +3,21 @@
 namespace ServiceProvider;
 
 use Pimple\Container;
-use Pimple\ServiceProviderInterface;
 use Panel\SmileSetManagingPanel;
 use Smilie\SmilieSystem;
 
-class SmiliesAPIProvider extends ServiceProviderBase
+class SmiliesAPIProvider extends Base\ServiceProviderBase
 {
-    public function onRegisterRule(Container $container)
+    public function onRegisterRule(Container &$container)
     {
-        self::registerRule('GET',  '/smilie_set_panel', 'onPanelRender');
-        self::registerRule('POST', '/smilie_api', 'onPanelSubmit');
-        self::registerRule('GET',  '/smilie_api/[:set]?', 'onSmiliesAPIRequest');
+        self::registerRule('GET',  '/smilie', 'onPanelRender');
+        self::registerRule('POST', '/smilie', 'onPanelSubmit');
+        self::registerRule('GET',  '/smilie_api[/{set:.*}]', 'onSmiliesAPIRequest');
     }
 
-    public function onPanelRender($request, $response, $service, $app)
+    public function onPanelRender(array $params)
     {
-        $submitingAddress = '/smilie_api';
+        $submitingAddress = '/smilie';
 
         $temp = \Smilie\SmilieSystem::getSmilieSettings();
         $sortedSmilieSet = $temp->sorted;
@@ -67,35 +66,33 @@ class SmiliesAPIProvider extends ServiceProviderBase
         <?php
     }
 
-    public function onPanelSubmit($request, $response, $service, $app)
+    public function onPanelSubmit(array $params)
     {
-        $sorted = $request->paramsPost()->get('sorted', '');
-        $disabled = $request->paramsPost()->get('disabled', '');
+        $sorted = isset($_POST['sorted'])? $_POST['sorted']:'';
+        $disabled = isset($_POST['disabled'])? $_POST['disabled']:'';
 
         if(empty($sorted) || empty($disabled))
-            $response->code(403);
-
-        $service->back();
+            http_response_code(403);
 
         file_put_contents(SMILIE_CONFIG_FILE, json_encode([
             json_decode($sorted),
             json_decode($disabled)
         ]));
+
+        echo "<script>history.go(-1);</script>";  
     }
 
-    public function onSmiliesAPIRequest($request, $response, $service, $app)
+    public function onSmiliesAPIRequest(array $params)
     {
-        // 返回Json格式
-        header('Content-Type:application/json;charset=utf-8');
-
-        $ExcludeDisabled = $request->headers()->exists('Origin'); // 如果不是跨域访问的话应该就是后台访问，后台访问需要显示所有表情包
+        $headers = \Utils\Utils::httpHeaders();
+        $ExcludeDisabled = isset($headers['Origin']); // 如果不是跨域访问的话应该就是后台访问，后台访问需要显示所有表情包
         $smilieTranslations = SmilieSystem::smilieTranslations($ExcludeDisabled);
         $lists = [];
 
-        if (isset($request->set)) {
+        if (isset($params['set'])) {
             // 获取表情包文件夹下的所有表情
             $all = $smilieTranslations;
-            $set = $request->set;
+            $set = $params['set'];
             $smilies = isset($all[$set])? array_keys($all[$set]):[];
             $lists = [SMILIE_URL, $smilies];
         } else {
@@ -107,6 +104,7 @@ class SmiliesAPIProvider extends ServiceProviderBase
             $lists = [SMILIE_URL, $sms];
         }
 
+        header('Content-Type:application/json;charset=utf-8');
         echo(json_encode($lists));
     }
 

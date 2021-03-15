@@ -29,7 +29,7 @@ define('MAIL_OWNER_MAIL', '');
 define('MAIL_OWNER_NAME', '作者');
 
 // 邮件日志文件
-define('MAIL_LOG_FILE', DATA_DIR.DIRECTORY_SEPARATOR.'logs.log');
+define('MAIL_LOG_FILE', DATA_DIR.DIRECTORY_SEPARATOR.'mails.log');
 
 // 邮件模板文件
 define('MAIL_TEMPLATE_FILE', DATA_DIR.DIRECTORY_SEPARATOR.'template.html');
@@ -87,7 +87,7 @@ define('SMTP_FROM_NAME', '');
 // Smilie directory
 define('SMILIE_DIR', DATA_DIR.DIRECTORY_SEPARATOR.'smilies');
 
-// 表情包文件夹, 用于实际访问（如果使用云计算，记得放开安全策略），需要加上 /
+// 表情包文件夹, 用于实际访问（如果使用云计算，记得放开安全策略），末尾需要加上 /
 define('SMILIE_URL', '');
 
 // 表情包设置文件
@@ -112,6 +112,12 @@ define('CORS_ALLOW_HOST', 'http://127.0.0.1:4001');
 // Sqlite数据库文件的路径
 define('DATABASE_PATH', DATA_DIR.DIRECTORY_SEPARATOR.'database.sqlite3');
 
+// 日志文件
+define('LOG_FILE', DATA_DIR.DIRECTORY_SEPARATOR.'logs.log');
+
+// 是否在异常中打印调用栈信息
+define('PRINT_TRACEBACK', true);
+
 // 时区设置(参考 https://www.php.net/manual/zh/timezones.php )
 define('TIMEZONE', 'Asia/Shanghai');
 
@@ -122,7 +128,7 @@ define('PAGE_CAPACITY', 5);
 define('DEVELOPMENT_MODE', true);
 
 // 浏览统计（单位秒），超过这个时间以后会被视为新的访客
-define('PERIOD_AS_NEW_VISITOR', 600);
+define('PERIOD_AS_NEW_VISITOR', 30);
 
 // 后台用户名和密码
 define('ADMIN_USER', 'aaa');

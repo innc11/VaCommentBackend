@@ -3,22 +3,22 @@
 namespace ServiceProvider;
 
 use Pimple\Container;
-use Captcha\CaptchaGenerator;
 
-class CaptchaProvider extends ServiceProviderBase
+class CaptchaProvider extends Base\ServiceProviderBase
 {
-    public function onRegisterRule(Container $container)
+    public function onRegisterRule(Container &$container)
     {
         self::registerRule('GET', '/captcha', 'captcha');
     }
 
-    public function captcha($request, $response, $service, $app)
+    public function captcha(array $params)
     {
-        $captcha = new CaptchaGenerator(realpath(ASSET_DIR.DIRECTORY_SEPARATOR.'captcha'.DIRECTORY_SEPARATOR.'arial.ttf'));
+        $captcha = new \Captcha\CaptchaGenerator(realpath(ASSET_DIR.DIRECTORY_SEPARATOR.'captcha'.DIRECTORY_SEPARATOR.'VarelaRound-Regular.ttf'));
         $captcha->generate();
+        $captcha->outputHeader();
+        $captcha->outputBody();
         $code = $captcha->getCode();
 
-        $_SESSION["captcha"] = $captcha;
         \Utils\Utils::setCookie('captcha', md5(strtolower($code)));
     }
 }

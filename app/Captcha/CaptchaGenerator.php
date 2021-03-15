@@ -56,20 +56,20 @@ class CaptchaGenerator
         }
     }  
 
-    //输出
-    private function outPut() {
+    public function outputHeader() {
         header('Content-type:image/png');
+    }
+
+    public function outputBody() {
         imagepng($this->img);
         imagedestroy($this->img);
-    }  
+    }
 
-    //对外生成
     public function generate() {
         $this->createBg();
         $this->createCode();
         $this->createLine();
         $this->createFont();
-        $this->outPut();
     }  
 
     //获取验证码

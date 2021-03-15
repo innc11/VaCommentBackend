@@ -4,9 +4,9 @@ namespace ServiceProvider;
 
 use Pimple\Container;
 
-class CommentManageProvider extends ServiceProviderBase
+class CommentManageProvider extends Base\ServiceProviderBase
 {
-    public function onRegisterRule(Container $container)
+    public function onRegisterRule(Container &$container)
     {
         self::registerRule('GET',  '/comment_manage_login', 'onLogin');
         self::registerRule('POST', '/comment_manage_home', 'onListComment');
@@ -14,7 +14,7 @@ class CommentManageProvider extends ServiceProviderBase
         self::registerRule('POST', '/comment_manage_erase_comfirm', 'onEraseComfirm');
     }
 
-    public static function onLogin($request, $response, $service, $app)
+    public static function onLogin(array $params)
     {
         self::beginHtml();
         ?>
@@ -31,14 +31,14 @@ class CommentManageProvider extends ServiceProviderBase
         self::endHtml();
     }
 
-    public static function onListComment($request, $response, $service, $app)
+    public static function onListComment(array $params)
     {
-        if(!self::authenticate($request, $response))
+        if(!self::authenticate())
             return;
 
         $db = $app->container['database'];
-        $adminUser = $request->param('user');
-        $adminPasswd = $request->param('password');
+        $adminUser = $_POST['user'];
+        $adminPasswd = $_POST['password'];
 
         self::beginHtml();
         ?>
@@ -101,13 +101,13 @@ class CommentManageProvider extends ServiceProviderBase
 
     public static function onEraseComfirm($request, $response, $service, $app)
     {
-        if(!self::authenticate($request, $response))
+        if(!self::authenticate())
             return;
 
-        $db = $app->container['database'];
-        $adminUser = $request->param('user');
-        $adminPasswd = $request->param('password');
-        $id = $request->param('id');
+        $db = self::getService('database');
+        $adminUser = $_POST['user'];
+        $adminPasswd = $_POST['password'];
+        $id = $_POST['id'];
 
         $sql = "select * from 'comments' where id = :id";
         $row = $db->prepare($sql)->execute(['id' => $id])->fetch(); 
@@ -139,15 +139,15 @@ class CommentManageProvider extends ServiceProviderBase
         self::endHtml();
     }
 
-    public static function onDoErase($request, $response, $service, $app)
+    public static function onDoErase(array $params)
     {
-        if(!self::authenticate($request, $response))
+        if(!self::authenticate())
             return;
 
-        $db = $app->container['database'];
-        $adminUser = $request->param('user');
-        $adminPasswd = $request->param('password');
-        $id = $request->param('id');
+        $db = self::getService('database');
+        $adminUser = $_POST['user'];
+        $adminPasswd = $_POST['password'];
+        $id = $_POST['id'];
         
         $sql = "delete from 'comments' where id = :id";
         $row = $db->prepare($sql)->execute(['id' => $id])->end();
@@ -186,13 +186,13 @@ class CommentManageProvider extends ServiceProviderBase
         <?php
     }
 
-    public static function authenticate($request, $response)
+    public static function authenticate()
     {
-        $adminUser = $request->param('user');
-        $adminPasswd = $request->param('password');
+        $adminUser = $_POST['user'];
+        $adminPasswd = $_POST['password'];
         if($adminUser != ADMIN_USER || $adminPasswd != ADMIN_PASSWORD)
         {
-            $response->code(403);
+            http_response_code(403);
             self::beginHtml();
             ?>
             <div>Wrong Username or Password</div>

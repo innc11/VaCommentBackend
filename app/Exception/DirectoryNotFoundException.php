@@ -4,7 +4,7 @@ namespace Exception;
 
 use \Exception;
 
-class DirectoryNotFoundException extends Exception
+class DirectoryNotFoundException extends BaseExceptionWithMessages
 {
     public function __construct($path)
     {

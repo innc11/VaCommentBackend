@@ -3,15 +3,13 @@
 namespace ServiceProvider;
 
 use Pimple\Container;
-use Pimple\ServiceProviderInterface;
-use Analysis\Visit;
 
-class AnalysisProvider implements ServiceProviderInterface
+class AnalysisProvider extends Base\ServiceProviderBase
 {
-    public function register(Container $container)
+    public function onRegisterRule(Container &$container)
     {
         $func_newVisitor = function(...$params) {
-            Visit::newVisitor(...$params);
+            \Analysis\Visit::newVisitor(...$params);
         };
         
         $container['analysis'] = [
